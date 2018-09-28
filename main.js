@@ -129,7 +129,7 @@ app.get(API_URI + "/books", (req, res)=>{
         finalCriteriaFromType = ['%', '%' , '%', qLimit, qOffset];
     }
 
-    if (qSort == 'name_asc') {
+    if (qSort == 'author_asc') {
         findAllBooksName(finalCriteriaFromType)
         .then((results)=>{
             console.log(results);
@@ -137,7 +137,7 @@ app.get(API_URI + "/books", (req, res)=>{
         }).catch((error)=>{
             res.status(500).json(error);
         });
-    } else if (qSort == 'name_desc') {
+    } else if (qSort == 'author_desc') {
         findAllBooksNameDesc(finalCriteriaFromType)
         .then((results)=>{
             console.log(results);
