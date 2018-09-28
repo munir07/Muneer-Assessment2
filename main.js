@@ -82,7 +82,7 @@ app.get(API_URI + "/books", (req, res)=>{
     var keyword = req.query.keyword;
     keyword = '%' + keyword + '%';
 
-    let qSort = req.query.sort;
+    let qSort = req.query.sortby;
     if(typeof(qSort) === 'undefined' ){
         qSort = 'default';
     }

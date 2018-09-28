@@ -1,4 +1,4 @@
-# Project Title
+# Book DB Play
 
 Muneer's Assement 2 - Server Side Foundations
 
@@ -10,81 +10,50 @@ Here are the various ways of calling the APIs and a description of all the param
 ```
 /api/books/1
 ```
-This will return the details of book with id=1
+This will return the details of the book with id=1.
+
 
 ```
 /api/books
 ```
-This will return the details of the first 10 books in the table - sorted by Title in Ascending order
+This will return the details of the first 10 books in the table - sorted by Title in Ascending order.
 
-### Installing
-
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
 
 ```
-Give the example
+/api/books?offset=3&limit=5
 ```
+This will return the details of the first 5 books - sorted by Title in Ascending order after an offset of 3. (Books 4 to 8 in the table)
+Offset defaults to 0 if not specified.
+Limit defaults to 10 if not specified
 
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
 
 ```
-Give an example
+/api/books?author=Daisy
 ```
+This will return the details of the first 10 books where Author's First Name or Last Name matches Daisy - sorted by Title in Ascending.
 
-### And coding style tests
-
-Explain what these tests test and why
 
 ```
-Give an example
+/api/books?title=fairy
 ```
+This will return the details of the first 10 books where title matches Fairy - sorted by Title in Ascending.
 
-## Deployment
 
-Add additional notes about how to deploy this on a live system
+```
+/api/books?title=Air&author=meadow
+```
+This will return the details of the first 10 books where title matches Air and Author's First Name or Last Name matches meadow  - sorted by Title in Ascending.
 
-## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+```
+/api/books?sortby=<sort_keyword>
+```
+As you would have noticed, our data is always sorted by Title in Ascending order by default. If you wan to change the order of sorting, you can use the following options to replace <sort_keyword> above.
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
+author_asc   -  Sort by Author's Last Name in ascending order
+author_desc  -  Sort by Author's Last Name in descending order
+title_desc   -  Sort by Title in descending order.
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+* **Muneer Shareiff** - *Initial work*
