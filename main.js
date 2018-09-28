@@ -69,8 +69,9 @@ var findAllBooksNameDesc = makeQuery(sqlFindAllBooksNameDesc, pool);
 app.get(API_URI +  "/books/:bookId", (req, res)=>{
     let bookId = req.params.bookId;
     findBookById([parseInt(bookId)]).then((results)=>{
-         console.log(results);
-         res.json(results);
+        results[0].cover_thumbnail = '/' + results[0].cover_thumbnail;
+        console.log(results);
+        res.json(results);
     }).catch((error)=>{
          res.status(500).json(error);
     })
