@@ -51,11 +51,17 @@ var makeQuery = (sql, pool)=>{
 
 // SQL Queries
 const sqlFindAllBooksSimple = "SELECT * FROM books";
-const sqlFindAllBooks = "SELECT cover_thumbnail, title, author_lastname, author_firstname FROM books WHERE (title LIKE ?) || (author_lastname LIKE ?) || (author_firstname LIKE ?) LIMIT ? OFFSET ? ORDER BY title";
+const sqlFindAllBooks = "SELECT cover_thumbnail, title, author_lastname, author_firstname FROM books WHERE (title LIKE ?) || (author_lastname LIKE ?) || (author_firstname LIKE ?) ORDER BY title LIMIT ? OFFSET ? ";
+const sqlFindAllBooksTitleDesc = "SELECT cover_thumbnail, title, author_lastname, author_firstname FROM books WHERE (title LIKE ?) || (author_lastname LIKE ?) || (author_firstname LIKE ?) ORDER BY title DESC LIMIT ? OFFSET ? ";
+const sqlFindAllBooksName = "SELECT cover_thumbnail, title, author_lastname, author_firstname FROM books WHERE (title LIKE ?) || (author_lastname LIKE ?) || (author_firstname LIKE ?) ORDER BY author_lastname LIMIT ? OFFSET ? ";
+const sqlFindAllBooksNameDesc = "SELECT cover_thumbnail, title, author_lastname, author_firstname FROM books WHERE (title LIKE ?) || (author_lastname LIKE ?) || (author_firstname LIKE ?) ORDER BY author_lastname DESC LIMIT ? OFFSET ? ";
 const sqlFindBook = "SELECT * FROM books WHERE id=? ";
 
 var findBookById = makeQuery(sqlFindBook, pool);
 var findAllBooks = makeQuery(sqlFindAllBooks, pool);
+var findAllBooksTitleDesc = makeQuery(sqlFindAllBooksTitleDesc, pool);
+var findAllBooksName = makeQuery(sqlFindAllBooksName, pool);
+var findAllBooksNameDesc = makeQuery(sqlFindAllBooksNameDesc, pool);
 
 //Step 3: Define routes
 
@@ -74,6 +80,11 @@ app.get(API_URI +  "/books/:bookId", (req, res)=>{
 app.get(API_URI + "/books", (req, res)=>{
     var keyword = req.query.keyword;
     keyword = '%' + keyword + '%';
+
+    let qSort = req.query.sort;
+    if(typeof(qSort) === 'undefined' ){
+        qSort = 'default';
+    }
 
     //default limit to 10
     let qLimit = req.query.limit;
@@ -118,74 +129,41 @@ app.get(API_URI + "/books", (req, res)=>{
         finalCriteriaFromType = ['%', '%' , '%', qLimit, qOffset];
     }
 
-    findAllBooks(finalCriteriaFromType)
-    .then((results)=>{
-        console.log(results);
-        res.json(results);
-    }).catch((error)=>{
-        res.status(500).json(error);
-    });
+    if (qSort == 'name_asc') {
+        findAllBooksName(finalCriteriaFromType)
+        .then((results)=>{
+            console.log(results);
+            res.json(results);
+        }).catch((error)=>{
+            res.status(500).json(error);
+        });
+    } else if (qSort == 'name_desc') {
+        findAllBooksNameDesc(finalCriteriaFromType)
+        .then((results)=>{
+            console.log(results);
+            res.json(results);
+        }).catch((error)=>{
+            res.status(500).json(error);
+        });
+
+    } else if (qSort == 'title_desc') {
+        findAllBooksTitleDesc(finalCriteriaFromType)
+        .then((results)=>{
+            console.log(results);
+            res.json(results);
+        }).catch((error)=>{
+            res.status(500).json(error);
+        });
+    } else {
+        findAllBooks(finalCriteriaFromType)
+        .then((results)=>{
+            console.log(results);
+            res.json(results);
+        }).catch((error)=>{
+            res.status(500).json(error);
+        });
+    }
 })
-
-
-// app.get(API_URI + "/books", (req, res)=>{
-//     console.log("/books query !");
-
-//         console.log(req.query);
-//         var keyword = '%' + req.query.keyword + '%';
-
-//         var selectionType = req.query.selectionType;
-//         console.log(keyword);
-//         console.log(selectionType);
-//         let finalCriteriaType = [];
-
-//         // search title
-//         if(selectionType == 'T'){
-//             finalCriteriaType = [keyword, '', '', parseInt(req.query.limit), parseInt(req.query.offset)]
-//             // findAllBooksTitle(finalCriteriaType)
-//             // .then((results)=>{
-//             //     console.log(results);
-//             //     res.json(results);
-//             // }).catch((error)=>{
-//             //     res.status(500).json(error);
-//             // });
-//         }
-
-//         // search author (lastname and firstname)
-//         if(selectionType == 'A'){
-//             finalCriteriaType = ['', keyword, keyword, parseInt(req.query.limit), parseInt(req.query.offset)]
-//             // findAllBooksAuthor(finalCriteriaType)
-//             // .then((results)=>{
-//             //     console.log(results);
-//             //     res.json(results);
-//             // }).catch((error)=>{
-//             //     res.status(500).json(error);
-//             // });
-//         }
-
-//         // search both (author and title)
-//         if(selectionType == 'B'){
-//             finalCriteriaType = [keyword, keyword, keyword, parseInt(req.query.limit), parseInt(req.query.offset)]
-//             // findAllBooksAuthorTitle(finalCriteriaType)
-//             // .then((results)=>{
-//             //     console.log(results);
-//             //     res.json(results);
-//             // }).catch((error)=>{
-//             //     res.status(500).json(error);
-//             // });
-//         }
-
-
-//         findAllBooks(finalCriteriaType)
-//         .then((results)=>{
-//             console.log(results);
-//             res.json(results);
-//         }).catch((error)=>{
-//             res.status(500).json(error);
-//         });
-
-// })
-
 
 //Serves from public and images
 app.use(express.static(path.join(__dirname, 'public')));
