@@ -6,10 +6,16 @@ Muneer's Assement 2 - Server Side Foundations
 ### API Descriptions
 
 Here are the various ways of calling the APIs and a description of all the parameters involved.
+
 ```
 /api/books/1
 ```
 This will return the details of book with id=1
+
+```
+/api/books
+```
+This will return the details of the first 10 books in the table - sorted by Title in Ascending order
 
 ### Installing
 
