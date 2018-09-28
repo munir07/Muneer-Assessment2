@@ -2,17 +2,14 @@
 
 Muneer's Assement 2 - Server Side Foundations
 
-## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+### API Descriptions
 
-### Prerequisites
-
-What things you need to install the software and how to install them
-
+Here are the various ways of calling the APIs and a description of all the parameters involved.
 ```
-Give examples
+/api/books/1
 ```
+This will return the details of book with id=1
 
 ### Installing
 
