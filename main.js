@@ -51,7 +51,7 @@ var makeQuery = (sql, pool)=>{
 
 // SQL Queries
 const sqlFindAllBooksSimple = "SELECT * FROM books";
-const sqlFindAllBooks = "SELECT * FROM books WHERE (title LIKE ?) || (author_lastname LIKE ?) || (author_firstname LIKE ?) LIMIT ? OFFSET ?";
+const sqlFindAllBooks = "SELECT cover_thumbnail, title, author_lastname, author_firstname FROM books WHERE (title LIKE ?) || (author_lastname LIKE ?) || (author_firstname LIKE ?) LIMIT ? OFFSET ? ORDER BY title";
 const sqlFindBook = "SELECT * FROM books WHERE id=? ";
 
 var findBookById = makeQuery(sqlFindBook, pool);
@@ -70,40 +70,61 @@ app.get(API_URI +  "/books/:bookId", (req, res)=>{
     })
 })
 
-
 // Books by Query (Multiple)
 app.get(API_URI + "/books", (req, res)=>{
-    console.log("/books query !");
-      console.log(req.query);
+    var keyword = req.query.keyword;
+    keyword = '%' + keyword + '%';
 
-        var keyword = req.query.keyword;
-        keyword = '%' + keyword + '%';
-        var selectionType = req.query.selectionType;
-        console.log(keyword);
-        console.log(selectionType);
+    //default limit to 10
+    let qLimit = req.query.limit;
+    if(typeof(qLimit) === 'undefined' ){
+        qLimit = '10';
+    }
+    qLimit = parseInt(qLimit);
 
-        let finalCriteriaFromType = ['%', '%' , '%',parseInt(req.query.limit), parseInt(req.query.offset)];
-        if(selectionType == 'T'){
-            finalCriteriaFromType = [keyword, '@', '@',parseInt(req.query.limit),parseInt(req.query.offset)]
-        }
+    // default offset to 0
+    let qOffset = req.query.offset;
+    if(typeof(qOffset) === 'undefined' ){
+        qOffset = '0';
+    }
+    qOffset = parseInt(qOffset);
 
-        if(selectionType == 'A'){
-            finalCriteriaFromType = ['@', keyword, keyword,parseInt(req.query.limit),parseInt(req.query.offset)]
-        }
+    let qAuthor = req.query.author;
+    let bAuthor = true;
+    if(typeof(qAuthor) === 'undefined' ){
+        qAuthor = '@';
+        bAuthor = false;
+    } else {
+        qAuthor = '%' + req.query.author + '%';
+    }
 
-        if(selectionType == 'B'){
-            finalCriteriaFromType = [keyword, keyword, keyword, parseInt(req.query.limit),parseInt(req.query.offset)]
-        }
+    let qTitle = req.query.title;
+    let bTitle = true;
+    if(typeof(qTitle) === 'undefined' ){
+        qTitle = '@';
+        bTitle = false;
+    } else {
+        qTitle = '%' + req.query.title + '%';
+    }
 
-        findAllBooks(finalCriteriaFromType)
-        .then((results)=>{
-            console.log(results);
-            res.json(results);
-        }).catch((error)=>{
-            res.status(500).json(error);
-        });
+    let finalCriteriaFromType = []
+    if (bTitle & bAuthor) {
+        finalCriteriaFromType = [qTitle, qAuthor, qAuthor, qLimit, qOffset];
+    } else if (bTitle) {
+        finalCriteriaFromType = [qTitle, '@', '@', qLimit, qOffset]
+    } else if (bAuthor) {
+        finalCriteriaFromType = ['@', qAuthor, qAuthor, qLimit, qOffset]
+    } else {
+        finalCriteriaFromType = ['%', '%' , '%', qLimit, qOffset];
+    }
 
-
+    findAllBooks(finalCriteriaFromType)
+    .then((results)=>{
+        console.log(results);
+        res.json(results);
+    }).catch((error)=>{
+        res.status(500).json(error);
+    });
 })
 
 
