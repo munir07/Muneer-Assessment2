@@ -6,6 +6,7 @@ const mysql = require("mysql");
 const cors = require('cors');
 const request = require('request');
 const qs = require('querystring');
+const multer = require('multer');
 
 const API_URI = "/api";
 const app = express();
@@ -62,6 +63,21 @@ var findAllBooks = makeQuery(sqlFindAllBooks, pool);
 var findAllBooksTitleDesc = makeQuery(sqlFindAllBooksTitleDesc, pool);
 var findAllBooksName = makeQuery(sqlFindAllBooksName, pool);
 var findAllBooksNameDesc = makeQuery(sqlFindAllBooksNameDesc, pool);
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, '/Users/kadersmm/Projects/Muneer-Assesment2/images')
+    },
+    filename: function (req, file, cb) {
+      console.log(JSON.stringify(file));
+      var uploadFileTokens = file.originalname.split('.');
+      console.log(uploadFileTokens);
+      cb(null, uploadFileTokens[0] + '-' + Date.now() + '.'+ uploadFileTokens[uploadFileTokens.length-1])
+    },
+    fieldSize: 20 * 1024 * 1024  // 20MB
+})
+
+var upload = multer({ storage: storage })
 
 //Step 3: Define routes
 
@@ -165,6 +181,10 @@ app.get(API_URI + "/books", (req, res)=>{
         });
     }
 })
+
+app.post(API_URI + '/upload', upload.single("cover"), (req, res, next)=>{
+    res.status(200).json({message: "upload ok!"});
+});
 
 //Serves from public and images
 app.use(express.static(path.join(__dirname, 'public')));

@@ -50,9 +50,16 @@ This will return the details of the first 10 books where title matches Air and A
 ```
 As you would have noticed, our data is always sorted by Title in Ascending order by default. If you wan to change the order of sorting, you can use the following options to replace <sort_keyword> above.
 
-author_asc   -  Sort by Author's Last Name in ascending order
-author_desc  -  Sort by Author's Last Name in descending order
-title_desc   -  Sort by Title in descending order.
++ author_asc   -  Sort by Author's Last Name in ascending order
++ author_desc  -  Sort by Author's Last Name in descending order
++ title_desc   -  Sort by Title in descending order.
+
+```
+/api/upload?cover=<filename>
+```
+To upload a cover image, you can do this. It will upload the file to images directory
+
+
 
 ## Authors
 
